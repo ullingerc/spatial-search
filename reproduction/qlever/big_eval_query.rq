@@ -1,0 +1,577 @@
+# Simple Query Template for Spatial Search
+
+# Magic SERVICE IRI for spatial search
+PREFIX spatialSearch: <https://qlever.cs.uni-freiburg.de/spatialSearch/>
+
+# Prefix declarations for OSM
+PREFIX osm: <https://www.openstreetmap.org/>
+PREFIX osmkey: <https://www.openstreetmap.org/wiki/Key:>
+PREFIX osmrel: <https://www.openstreetmap.org/relation/>
+PREFIX osmway: <https://www.openstreetmap.org/way/>
+PREFIX osmnode: <https://www.openstreetmap.org/node/>
+
+# Prefix declarations for datatypes, standard predicates, etc
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX math: <http://www.w3.org/2005/xpath-functions/math#>
+
+# Prefix declarations for GeoSPARQL
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ogc: <http://www.opengis.net/rdf#>
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+
+SELECT * WHERE {
+  
+  {
+    # Simple Generic Group Template
+    SELECT
+            # Select expressions for `school`:
+            (AVG(?dist_school) AS ?dist_school_avg)
+            (STDEV(?dist_school) AS ?dist_school_sd)
+            # Select expressions for `bakery`:
+            (AVG(?dist_bakery) AS ?dist_bakery_avg)
+            (STDEV(?dist_bakery) AS ?dist_bakery_sd)
+            # Select expressions for `supermarket`:
+            (AVG(?dist_supermarket) AS ?dist_supermarket_avg)
+            (STDEV(?dist_supermarket) AS ?dist_supermarket_sd)
+            # Select expressions for `pharmacy`:
+            (AVG(?dist_pharmacy) AS ?dist_pharmacy_avg)
+            (STDEV(?dist_pharmacy) AS ?dist_pharmacy_sd)
+            # Select expressions for `butcher`:
+            (AVG(?dist_butcher) AS ?dist_butcher_avg)
+            (STDEV(?dist_butcher) AS ?dist_butcher_sd)
+            # Select expressions for `hospital`:
+            (AVG(?dist_hospital) AS ?dist_hospital_avg)
+            (STDEV(?dist_hospital) AS ?dist_hospital_sd)
+            # Select expressions for `hairdresser`:
+            (AVG(?dist_hairdresser) AS ?dist_hairdresser_avg)
+            (STDEV(?dist_hairdresser) AS ?dist_hairdresser_sd)
+            # Select expressions for `transport`:
+            (AVG(?dist_transport) AS ?dist_transport_avg)
+            (STDEV(?dist_transport) AS ?dist_transport_sd)
+            # Select expressions for `kindergarten`:
+            (AVG(?dist_kindergarten) AS ?dist_kindergarten_avg)
+            (STDEV(?dist_kindergarten) AS ?dist_kindergarten_sd)
+            # Select expressions for `university`:
+            (AVG(?dist_university) AS ?dist_university_avg)
+            (STDEV(?dist_university) AS ?dist_university_sd)
+            # Select expressions for `motorway`:
+            (AVG(?dist_motorway) AS ?dist_motorway_avg)
+            (STDEV(?dist_motorway) AS ?dist_motorway_sd)
+            # Select expressions for `gastronomy`:
+            (AVG(?dist_gastronomy) AS ?dist_gastronomy_avg)
+            (STDEV(?dist_gastronomy) AS ?dist_gastronomy_sd)
+            # Select expressions for `fuel`:
+            (AVG(?dist_fuel) AS ?dist_fuel_avg)
+            (STDEV(?dist_fuel) AS ?dist_fuel_sd)
+    WHERE {
+      
+      # --- Begin of `building_`
+      
+      {
+        # All buildings likely to be residential
+        {
+          # All candidate buildings (includes "yes" - they are filtered by the MINUS subquery)
+          # TODO Remove some very rare ones for simplicity
+          VALUES ?building_types {
+            "altenheim"
+            "apartements"
+            "apartment"
+            "apartment_building"
+            "apartments"
+            "apartments;civic"
+            "apartments;house"
+            "apartmentsq"
+            "apartments;residential"
+            "apartments;yes"
+            "app"
+            "appartements"
+            "Appartements"
+            "appartment"
+            "appartments"
+            "block_house"
+            "building"
+            "yes"
+            "civic"
+            "datached"
+            "detached;apartments"
+            "detached_house"
+            "detached;yes"
+            "detached;yes;"
+            "domitory"
+            "dormitory"
+            "double_house"
+            "farm_house"
+            "farmhouse"
+            "hall_of_residence"
+            "home"
+            "house;"
+            "house;apartments"
+            "houseboat"
+            "housebuilding=semidetached_house"
+            "housem"
+            "house;residential"
+            "houses"
+            "house semi"
+            "house=terraced"
+            "house;yes"
+            "housing"
+            "Landhaus"
+            "dwelling_house"
+            "mobile_home"
+            "residential"
+            "semidetached_house"
+            "semidetached"
+            "terraced_house"
+            "terrace_house"
+          }
+          ?building osmkey:building ?building_types .
+        }
+        MINUS
+        {
+          # Filter out buildings that lay within landuses where there is probably no residential housing
+          SELECT ?building WHERE {
+            ?building osmkey:building [] .
+            ?landuse ogc:sfContains ?building .
+            VALUES ?landuse_types {
+              "industrial"
+              "cemetery"
+              "commercial"
+              "retail"
+              "landfill"
+              "garages"
+              "military"
+              "religious"
+              "education"
+              "highway"
+              "depot"
+              "fairground"
+              "storage"
+              "motorway"
+              "harbour"
+              "garage"
+            }
+            VALUES ?landuse_predicates {
+              osmkey:landuse
+              osmkey:amenity
+            }
+            ?landuse ?landuse_predicates ?landuse_types .
+          }
+        }
+        
+        # Use '#' as part of the replace rule. This way, if no replacements are intended, the replace rule can be left out
+        #%BUILDINGS_EXTRA%
+        
+        ?building geo:hasCentroid/geo:asWKT ?building_centroid .
+        BIND(COUNT(*) AS ?count_building)
+      }
+      
+      # --- End of `building_`
+      
+      # --- Begin of `transport`
+      
+      SERVICE spatialSearch: {
+        _:config spatialSearch:algorithm spatialSearch:s2 ;
+                 spatialSearch:left ?building_centroid ;
+                 spatialSearch:right ?transport_centroid ;
+                 spatialSearch:numNearestNeighbors 1 ;
+                 spatialSearch:bindDistance ?dist_transport .
+        {
+          
+          # All public transport stops
+          {
+            # Public transport halts tagged amenity
+            VALUES ?transport_amenity_types_ {
+              'bus'
+              'bus_shelter'
+              'bus station'
+              'bus_station'
+              'school_bus'
+              'bus_station'
+              'bus_stop'
+              'train_station'
+            }
+            ?transport osmkey:amenity ?transport_amenity_types_ .
+          }
+          UNION
+          {
+            # Public transport halts tagged public_transport
+            VALUES ?transport_pt_types_ {
+              'platform'
+              'station'
+              'halt'
+              'stop'
+            }
+            VALUES ?transport_pt_pred_ {
+              osmkey:public_transport
+              osmkey:railway
+            }
+            ?transport ?transport_pt_pred_ ?transport_pt_types_ .
+          }
+          
+          ?transport geo:hasCentroid/geo:asWKT ?transport_centroid .
+          
+        }
+      }
+      
+      # --- End of `transport`
+      
+      # --- Begin of `supermarket`
+      
+      SERVICE spatialSearch: {
+        _:config spatialSearch:algorithm spatialSearch:s2 ;
+                 spatialSearch:left ?building_centroid ;
+                 spatialSearch:right ?supermarket_centroid ;
+                 spatialSearch:numNearestNeighbors 1 ;
+                 spatialSearch:bindDistance ?dist_supermarket .
+        {
+          
+          # This VALUES list must be declared each time for technical reasons
+          VALUES ?supermarket_poi_predicates_ {
+            osmkey:building
+            osmkey:shop
+            osmkey:amenity
+            osmkey:landuse
+          }
+          
+          # All supermarkets, discounters, convenience stores
+          VALUES ?supermarket_amenity_types_ {
+            "supermarket"
+            "grocery_store"
+            "convenience"
+          }
+          ?supermarket ?supermarket_poi_predicates_ ?supermarket_amenity_types_ .
+          
+          ?supermarket geo:hasCentroid/geo:asWKT ?supermarket_centroid .
+          
+        }
+      }
+      
+      # --- End of `supermarket`
+      
+      # --- Begin of `bakery`
+      
+      SERVICE spatialSearch: {
+        _:config spatialSearch:algorithm spatialSearch:s2 ;
+                 spatialSearch:left ?building_centroid ;
+                 spatialSearch:right ?bakery_centroid ;
+                 spatialSearch:numNearestNeighbors 1 ;
+                 spatialSearch:bindDistance ?dist_bakery .
+        {
+          
+          # This VALUES list must be declared each time for technical reasons
+          VALUES ?bakery_poi_predicates_ {
+            osmkey:building
+            osmkey:shop
+            osmkey:amenity
+            osmkey:landuse
+          }
+          
+          # All bakeries
+          ?bakery ?bakery_poi_predicates_ "bakery" .
+          
+          ?bakery geo:hasCentroid/geo:asWKT ?bakery_centroid .
+          
+        }
+      }
+      
+      # --- End of `bakery`
+      
+      # --- Begin of `butcher`
+      
+      SERVICE spatialSearch: {
+        _:config spatialSearch:algorithm spatialSearch:s2 ;
+                 spatialSearch:left ?building_centroid ;
+                 spatialSearch:right ?butcher_centroid ;
+                 spatialSearch:numNearestNeighbors 1 ;
+                 spatialSearch:bindDistance ?dist_butcher .
+        {
+          
+          # This VALUES list must be declared each time for technical reasons
+          VALUES ?butcher_poi_predicates_ {
+            osmkey:building
+            osmkey:shop
+            osmkey:amenity
+            osmkey:landuse
+          }
+          
+          # All butcher shops
+          ?butcher  ?butcher_poi_predicates_ "butcher" .
+          
+          ?butcher geo:hasCentroid/geo:asWKT ?butcher_centroid .
+          
+        }
+      }
+      
+      # --- End of `butcher`
+      
+      # --- Begin of `fuel`
+      
+      SERVICE spatialSearch: {
+        _:config spatialSearch:algorithm spatialSearch:s2 ;
+                 spatialSearch:left ?building_centroid ;
+                 spatialSearch:right ?fuel_centroid ;
+                 spatialSearch:numNearestNeighbors 1 ;
+                 spatialSearch:bindDistance ?dist_fuel .
+        {
+          
+          # This VALUES list must be declared each time for technical reasons
+          VALUES ?fuel_poi_predicates_ {
+            osmkey:building
+            osmkey:shop
+            osmkey:amenity
+            osmkey:landuse
+          }
+          
+          # All gas stations
+          ?fuel ?fuel_poi_predicates_ "fuel" .
+          
+          ?fuel geo:hasCentroid/geo:asWKT ?fuel_centroid .
+          
+        }
+      }
+      
+      # --- End of `fuel`
+      
+      # --- Begin of `gastronomy`
+      
+      SERVICE spatialSearch: {
+        _:config spatialSearch:algorithm spatialSearch:s2 ;
+                 spatialSearch:left ?building_centroid ;
+                 spatialSearch:right ?gastronomy_centroid ;
+                 spatialSearch:numNearestNeighbors 1 ;
+                 spatialSearch:bindDistance ?dist_gastronomy .
+        {
+          
+          # This VALUES list must be declared each time for technical reasons
+          VALUES ?gastronomy_poi_predicates_ {
+            osmkey:building
+            osmkey:shop
+            osmkey:amenity
+            osmkey:landuse
+          }
+          
+          # All gastronomic offerings
+          VALUES ?gastronomy_amenity_types_ {
+            "bar"
+            "biergarten"
+            "cafe"
+            "fast_food"
+            "pub"
+            "restaurant"
+          }
+          ?gastronomy ?gastronomy_poi_predicates_ ?gastronomy_amenity_types_ .
+          
+          ?gastronomy geo:hasCentroid/geo:asWKT ?gastronomy_centroid .
+          
+        }
+      }
+      
+      # --- End of `gastronomy`
+      
+      # --- Begin of `hairdresser`
+      
+      SERVICE spatialSearch: {
+        _:config spatialSearch:algorithm spatialSearch:s2 ;
+                 spatialSearch:left ?building_centroid ;
+                 spatialSearch:right ?hairdresser_centroid ;
+                 spatialSearch:numNearestNeighbors 1 ;
+                 spatialSearch:bindDistance ?dist_hairdresser .
+        {
+          
+          # This VALUES list must be declared each time for technical reasons
+          VALUES ?hairdresser_poi_predicates_ {
+            osmkey:building
+            osmkey:shop
+            osmkey:amenity
+            osmkey:landuse
+          }
+          
+          # All hair dressers / salons
+          ?hairdresser  ?hairdresser_poi_predicates_ "hairdresser" .
+          
+          ?hairdresser geo:hasCentroid/geo:asWKT ?hairdresser_centroid .
+          
+        }
+      }
+      
+      # --- End of `hairdresser`
+      
+      # --- Begin of `hospital`
+      
+      SERVICE spatialSearch: {
+        _:config spatialSearch:algorithm spatialSearch:s2 ;
+                 spatialSearch:left ?building_centroid ;
+                 spatialSearch:right ?hospital_centroid ;
+                 spatialSearch:numNearestNeighbors 1 ;
+                 spatialSearch:bindDistance ?dist_hospital .
+        {
+          
+          # This VALUES list must be declared each time for technical reasons
+          VALUES ?hospital_poi_predicates_ {
+            osmkey:building
+            osmkey:shop
+            osmkey:amenity
+            osmkey:landuse
+          }
+          
+          # All hospital buildings
+          VALUES ?hospital_amenity_types_ {
+            "hospital"
+            "clinic"
+          }
+          ?hospital ?hospital_poi_predicates_ ?hospital_amenity_types_ .
+          
+          ?hospital geo:hasCentroid/geo:asWKT ?hospital_centroid .
+          
+        }
+      }
+      
+      # --- End of `hospital`
+      
+      # --- Begin of `kindergarten`
+      
+      SERVICE spatialSearch: {
+        _:config spatialSearch:algorithm spatialSearch:s2 ;
+                 spatialSearch:left ?building_centroid ;
+                 spatialSearch:right ?kindergarten_centroid ;
+                 spatialSearch:numNearestNeighbors 1 ;
+                 spatialSearch:bindDistance ?dist_kindergarten .
+        {
+          
+          # This VALUES list must be declared each time for technical reasons
+          VALUES ?kindergarten_poi_predicates_ {
+            osmkey:building
+            osmkey:shop
+            osmkey:amenity
+            osmkey:landuse
+          }
+          
+          # All kindergartens
+          ?kindergarten ?kindergarten_poi_predicates_ "kindergarten" .
+          
+          ?kindergarten geo:hasCentroid/geo:asWKT ?kindergarten_centroid .
+          
+        }
+      }
+      
+      # --- End of `kindergarten`
+      
+      # --- Begin of `motorway`
+      
+      SERVICE spatialSearch: {
+        _:config spatialSearch:algorithm spatialSearch:s2 ;
+                 spatialSearch:left ?building_centroid ;
+                 spatialSearch:right ?motorway_centroid ;
+                 spatialSearch:numNearestNeighbors 1 ;
+                 spatialSearch:bindDistance ?dist_motorway .
+        {
+          
+          # All highway ramps
+          ?motorway osmkey:highway "motorway_link" .
+          
+          ?motorway geo:hasCentroid/geo:asWKT ?motorway_centroid .
+          
+        }
+      }
+      
+      # --- End of `motorway`
+      
+      # --- Begin of `pharmacy`
+      
+      SERVICE spatialSearch: {
+        _:config spatialSearch:algorithm spatialSearch:s2 ;
+                 spatialSearch:left ?building_centroid ;
+                 spatialSearch:right ?pharmacy_centroid ;
+                 spatialSearch:numNearestNeighbors 1 ;
+                 spatialSearch:bindDistance ?dist_pharmacy .
+        {
+          
+          # This VALUES list must be declared each time for technical reasons
+          VALUES ?pharmacy_poi_predicates_ {
+            osmkey:building
+            osmkey:shop
+            osmkey:amenity
+            osmkey:landuse
+          }
+          
+          # All chemists / pharmacies
+          VALUES ?pharmacy_amenity_types_ {
+            "pharmacy"
+            "chemist"
+          }
+          ?pharmacy ?pharmacy_poi_predicates_ ?pharmacy_amenity_types_ .
+          
+          ?pharmacy geo:hasCentroid/geo:asWKT ?pharmacy_centroid .
+          
+        }
+      }
+      
+      # --- End of `pharmacy`
+      
+      # --- Begin of `school`
+      
+      SERVICE spatialSearch: {
+        _:config spatialSearch:algorithm spatialSearch:s2 ;
+                 spatialSearch:left ?building_centroid ;
+                 spatialSearch:right ?school_centroid ;
+                 spatialSearch:numNearestNeighbors 1 ;
+                 spatialSearch:bindDistance ?dist_school .
+        {
+          
+          # This VALUES list must be declared each time for technical reasons
+          VALUES ?school_poi_predicates_ {
+            osmkey:building
+            osmkey:shop
+            osmkey:amenity
+            osmkey:landuse
+          }
+          
+          # All school buildings
+          ?school ?school_poi_predicates_ "school" .
+          
+          ?school geo:hasCentroid/geo:asWKT ?school_centroid .
+          
+        }
+      }
+      
+      # --- End of `school`
+      
+      # --- Begin of `university`
+      
+      SERVICE spatialSearch: {
+        _:config spatialSearch:algorithm spatialSearch:s2 ;
+                 spatialSearch:left ?building_centroid ;
+                 spatialSearch:right ?university_centroid ;
+                 spatialSearch:numNearestNeighbors 1 ;
+                 spatialSearch:bindDistance ?dist_university .
+        {
+          
+          # This VALUES list must be declared each time for technical reasons
+          VALUES ?university_poi_predicates_ {
+            osmkey:building
+            osmkey:shop
+            osmkey:amenity
+            osmkey:landuse
+          }
+          
+          # All university buildings
+          VALUES ?university_amenity_types_ {
+            "university"
+            "college"
+          }
+          ?university ?university_poi_predicates_ ?university_amenity_types_ .
+          
+          ?university geo:hasCentroid/geo:asWKT ?university_centroid .
+          
+        }
+      }
+      
+      # --- End of `university`
+      
+    }
+  }
+  
+}
+

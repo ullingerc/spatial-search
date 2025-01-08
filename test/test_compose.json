@@ -1,0 +1,74 @@
+{
+    "template": {
+        "filename": "template.rq",
+        "replace": [
+            {
+                "search": "%DEMO%",
+                "replace": "demo"
+            },
+            {
+                "search": "%TEST%",
+                "replace_file": "test.rq"
+            }
+        ]
+    },
+    "spatial_searches": [
+        {
+            "config": {
+                "algorithm": "s2",
+                "numNearestNeighbors": 2,
+                "maxDistance": 700
+            },
+            "template_pattern": "%SPATIALSEARCH%",
+            "left": [
+                "station.rq"
+            ],
+            "right": [
+                {
+                    "filename": "restaurant.rq",
+                    "payload": [
+                        "?restaurant_name"
+                    ]
+                }
+            ],
+            "name_template": {
+                "template": "%LEFT%_%RIGHT%",
+                "patterns": {
+                    "left": "%LEFT%",
+                    "right": "%RIGHT%",
+                    "type": "%TYPE%"
+                }
+            },
+            "group_template": {
+                "filename": "group_template.rq",
+                "patterns": {
+                    "queries": "%QUERIES%",
+                    "select": "%SELECT%"
+                }
+            },
+            "group_size": 10,
+            "add_selectors": {
+                "selectors": [
+                    "%CENTROID%",
+                    "%DIST%"
+                ],
+                "patterns": {
+                    "dist": "%DIST%",
+                    "count": "%COUNT%",
+                    "centroid": "%CENTROID%"
+                }
+            },
+            "provided_values": [
+                {
+                    "variable": "?poi_predicates",
+                    "values": [
+                        "osmkey:building",
+                        "osmkey:shop",
+                        "osmkey:amenity",
+                        "osmkey:landuse"
+                    ]
+                }
+            ]
+        }
+    ]
+}

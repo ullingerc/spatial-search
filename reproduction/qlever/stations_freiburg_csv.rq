@@ -1,0 +1,16 @@
+PREFIX osmkey: <https://www.openstreetmap.org/wiki/Key:>
+PREFIX ogc: <http://www.opengis.net/rdf#>
+PREFIX osmrel: <https://www.openstreetmap.org/relation/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX osmnode: <https://www.openstreetmap.org/node/>
+SELECT ?id ?name ?ref ?geo WHERE {
+  osmrel:62768 ogc:sfContains ?station .
+  {   ?station osmkey:railway "station" . } UNION { ?station osmkey:railway "halt" . }
+  ?station osmkey:name ?name .
+  ?station osmkey:railway:ref ?ref .
+  ?station geo:hasCentroid/geo:asWKT ?wkt .
+  BIND(STRAFTER(STR(?station), "https://www.openstreetmap.org/node/") AS ?id)
+  BIND(CONCAT("lat=", geof:latitude(?wkt), ";lng=", geof:longitude(?wkt)) AS ?geo)
+}
+

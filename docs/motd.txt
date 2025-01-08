@@ -1,0 +1,8 @@
+This container provides programs that generate RDF turtle datasets and SPARQL
+queries as described in the thesis "Efficient Spatial Search for the QLever
+SPARQL engine". Copyright 2024 Christoph Ullinger.
+
+All software and documentation is licensed under the GNU General Public License
+version 3 or later. For more details, see 'make license'
+
+For a list of features and more information, please use 'make help'

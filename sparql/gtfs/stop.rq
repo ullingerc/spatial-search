@@ -1,0 +1,36 @@
+# All public transport stops with average number of daily trips
+SERVICE qleverGTFS: {
+  {
+    SELECT  ?stop
+            ?stop_centroid
+            (COUNT(*) / 7 AS ?n_trips)
+            # stop_name
+    WHERE {
+      ?stoptime_ a gtfs:StopTime ;
+                 rdfs:member %GTFS_VERSION% ;
+                 gtfs:trip ?trip_ ;
+                 gtfs:stop ?stop .
+      ?stop a gtfs:Stop ;
+            # foaf:name stop_name ;
+            geo:hasGeometry/geo:asWKT ?stop_centroid .
+      ?trip_ a gtfs:Trip ;
+             gtfs:service ?service_ .
+
+      # On which weekdays is this journey in service
+      VALUES ?weekdays_ {
+        gtfs:monday
+        gtfs:tuesday
+        gtfs:wednesday
+        gtfs:thursday
+        gtfs:friday
+        gtfs:saturday
+        gtfs:sunday
+      }
+      ?calendar_rule_ a gtfs:CalendarRule ;
+                     gtfs:service ?service_ ;
+                     ?weekdays_ "true"^^xsd:boolean .
+    }
+    GROUP BY ?stop ?stop_centroid
+    # stop_name
+  }
+}

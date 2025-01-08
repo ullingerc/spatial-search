@@ -1,0 +1,16 @@
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX osmkey: <https://www.openstreetmap.org/wiki/Key:>
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+
+SELECT (AVG(?min_dist) AS ?avg_min_dist) WHERE {
+  {
+    SELECT (MIN(?dist) AS ?min_dist) WHERE {
+      ?left osmkey:%TAG_LEFT% ;
+            geo:hasCentroid/geo:asWKT ?left_centroid .
+      ?right osmkey:%TAG_RIGHT% ;
+            geo:hasCentroid/geo:asWKT ?right_centroid .
+      BIND(geof:distance(?left_centroid, ?right_centroid) AS ?dist)
+    }
+    GROUP BY ?left
+  }
+}

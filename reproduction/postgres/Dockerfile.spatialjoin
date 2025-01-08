@@ -1,0 +1,20 @@
+# Container to compute the spatial join on a TSV with WKT literals - used to evaluate PostgreSQL/PostGIS
+FROM debian:bookworm AS base
+
+FROM base AS build
+
+RUN apt-get update && apt-get upgrade -y && apt-get install -y git make cmake g++ libbz2-dev zlib1g-dev && rm -rf /var/lib/apt/lists/*
+
+RUN git clone --recurse-submodules https://github.com/ad-freiburg/spatialjoin
+
+RUN cd spatialjoin && mkdir build && cd build && cmake .. && make -j
+
+FROM base AS main
+
+COPY --from=build /spatialjoin/build/spatialjoin /usr/bin/spatialjoin
+
+CMD ["spatialjoin"]
+
+# Usage:
+# podman build -t spatialjoin --file=Dockerfile.spatialjoin .
+# podman run --rm -v ./:/mnt spatialjoin sh -c "spatialjoin < /mnt/input.tsv > /mnt/output.csv"

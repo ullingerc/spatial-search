@@ -1,0 +1,41 @@
+PREFIX osmkey: <https://www.openstreetmap.org/wiki/Key:>
+PREFIX ogc: <http://www.opengis.net/rdf#>
+PREFIX osmrel: <https://www.openstreetmap.org/relation/>
+SELECT * WHERE {
+  {
+    SELECT ("leisure" AS ?tkey) ("sauna" AS ?tvalue) (COUNT(*) AS ?tcount) WHERE {
+      osmrel:51477 ogc:sfContains/osmkey:leisure "sauna" .
+    }
+  }
+  UNION {
+    SELECT ("railway" AS ?tkey) ("station" AS ?tvalue) (COUNT(*) AS ?tcount) WHERE {
+      osmrel:51477 ogc:sfContains/osmkey:railway "station" .
+    }
+  }
+  UNION {
+    SELECT ("shop" AS ?tkey) ("supermarket" AS ?tvalue) (COUNT(*) AS ?tcount) WHERE {
+      osmrel:51477 ogc:sfContains/osmkey:shop "supermarket" .
+    }
+  }
+  UNION {
+    SELECT ("tourism" AS ?tkey) ("viewpoint" AS ?tvalue) (COUNT(*) AS ?tcount) WHERE {
+      osmrel:51477 ogc:sfContains/osmkey:tourism "viewpoint" .
+    }
+  }
+  UNION {
+    SELECT ("amenity" AS ?tkey) ("restaurant" AS ?tvalue) (COUNT(*) AS ?tcount) WHERE {
+      osmrel:51477 ogc:sfContains/osmkey:amenity "restaurant" .
+    }
+  }
+  UNION {
+    SELECT ("amenity" AS ?tkey) ("bench" AS ?tvalue) (COUNT(*) AS ?tcount) WHERE {
+      osmrel:51477 ogc:sfContains/osmkey:amenity "bench" .
+    }
+  }
+  UNION {
+    SELECT ("building" AS ?tkey) ("*" AS ?tvalue) (COUNT(*) AS ?tcount) WHERE {
+      osmrel:51477 ogc:sfContains/osmkey:building [] .
+    }
+  }
+}
+ORDER BY ASC(?tcount)

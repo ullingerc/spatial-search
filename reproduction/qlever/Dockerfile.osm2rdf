@@ -1,0 +1,24 @@
+# Improved Dockerfile for osm2rdf
+FROM debian:bookworm AS base
+
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y git clang clang-tidy \
+    g++ libboost-dev libboost-serialization-dev libexpat1-dev cmake \
+    libbz2-dev zlib1g-dev libomp-dev
+
+FROM base AS build
+
+RUN mkdir /app && cd /app && \
+    git clone https://github.com/ad-freiburg/osm2rdf.git && \
+    cd osm2rdf && git checkout cf015f76bb9d257fbfa5eefbd31b828fbe75baaa && \
+    make
+
+FROM base AS main
+
+COPY --from=build /app/osm2rdf/build/apps/osm2rdf /usr/bin/osm2rdf
+
+CMD ["osm2rdf"]
+
+# Usage:
+# podman build -t osm2rdf --file=Dockerfile.osm2rdf .
+# podman run --rm -v ./:/mnt osm2rdf osm2rdf --help

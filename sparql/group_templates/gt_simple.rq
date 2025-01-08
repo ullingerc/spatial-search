@@ -1,0 +1,6 @@
+# Simple Generic Group Template
+SELECT 
+    %SELECT%
+WHERE {
+    %QUERIES%
+}

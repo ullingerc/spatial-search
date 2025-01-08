@@ -1,0 +1,20 @@
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX osmkey: <https://www.openstreetmap.org/wiki/Key:>
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX spatialSearch: <https://qlever.cs.uni-freiburg.de/spatialSearch/>
+
+SELECT (AVG(?min_dist) AS ?avg_min_dist) WHERE {
+  ?left osmkey:%TAG_LEFT% ;
+        geo:hasCentroid/geo:asWKT ?left_geometry .
+  SERVICE spatialSearch: {
+    _:config spatialSearch:algorithm spatialSearch:baseline ;
+             spatialSearch:numNearestNeighbors 1 ;
+             spatialSearch:left ?left_geometry ;
+             spatialSearch:right ?right_geometry ;
+             spatialSearch:bindDistance ?min_dist .
+    {
+      ?right osmkey:%TAG_RIGHT% ;
+             geo:hasCentroid/geo:asWKT ?right_geometry .
+    }
+  }
+}

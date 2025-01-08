@@ -1,0 +1,2 @@
+"feed_publisher_name","feed_publisher_url","feed_lang","feed_start_date","feed_end_date","feed_version","feed_contact_mail","feed_contact_url"
+"DELFI e.V.","https://www.delfi.de","de",20240520,20241214,"2024-6-3T13:31:45","x@y.de","https://www.delfi.de"

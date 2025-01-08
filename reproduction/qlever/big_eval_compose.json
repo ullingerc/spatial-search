@@ -1,0 +1,97 @@
+{
+  "template": {
+    "filename": "templates/simple.rq"
+  },
+  "spatial_searches": [
+    {
+      "config": {
+        "algorithm": "s2",
+        "numNearestNeighbors": 1,
+        "maxDistance": null
+      },
+      "template_pattern": "%SPATIALSEARCH%",
+      "left": [
+        "osm/building.rq"
+      ],
+      "right": [
+        {
+          "filename": "osm/transport.rq"
+        },
+        {
+          "filename": "osm/supermarket.rq"
+        },
+        {
+          "filename": "osm/bakery.rq"
+        },
+        {
+          "filename": "osm/butcher.rq"
+        },
+        {
+          "filename": "osm/fuel.rq"
+        },
+        {
+          "filename": "osm/gastronomy.rq"
+        },
+        {
+          "filename": "osm/hairdresser.rq"
+        },
+        {
+          "filename": "osm/hospital.rq"
+        },
+        {
+          "filename": "osm/kindergarten.rq"
+        },
+        {
+          "filename": "osm/motorway.rq"
+        },
+        {
+          "filename": "osm/pharmacy.rq"
+        },
+        {
+          "filename": "osm/school.rq"
+        },
+        {
+          "filename": "osm/university.rq"
+        }
+      ],
+      "name_template": {
+        "template": "%RIGHT%",
+        "patterns": {
+          "left": "%LEFT%",
+          "right": "%RIGHT%",
+          "type": "%TYPE%"
+        }
+      },
+      "group_template": {
+        "filename": "group_templates/gt_simple.rq",
+        "patterns": {
+          "queries": "%QUERIES%",
+          "select": "%SELECT%"
+        }
+      },
+      "group_size": null,
+      "add_selectors": {
+        "selectors": [
+          "(AVG(%DIST%) AS %DIST%_avg)",
+          "(STDEV(%DIST%) AS %DIST%_sd)"
+        ],
+        "patterns": {
+          "dist": "%DIST%",
+          "count": "%COUNT%",
+          "centroid": "%CENTROID%"
+        }
+      },
+      "provided_values": [
+        {
+          "variable": "?poi_predicates",
+          "values": [
+            "osmkey:building",
+            "osmkey:shop",
+            "osmkey:amenity",
+            "osmkey:landuse"
+          ]
+        }
+      ]
+    }
+  ]
+}

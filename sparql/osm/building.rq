@@ -1,0 +1,92 @@
+# All buildings likely to be residential
+{
+  # All candidate buildings (includes "yes" - they are filtered by the MINUS subquery)
+  # TODO Remove some very rare ones for simplicity
+  VALUES ?building_types {
+    "altenheim"
+    "apartements"
+    "apartment"
+    "apartment_building"
+    "apartments"
+    "apartments;civic"
+    "apartments;house"
+    "apartmentsq"
+    "apartments;residential"
+    "apartments;yes"
+    "app"
+    "appartements"
+    "Appartements"
+    "appartment"
+    "appartments"
+    "block_house"
+    "building"
+    "yes"
+    "civic"
+    "datached"
+    "detached;apartments"
+    "detached_house"
+    "detached;yes"
+    "detached;yes;"
+    "domitory"
+    "dormitory"
+    "double_house"
+    "farm_house"
+    "farmhouse"
+    "hall_of_residence"
+    "home"
+    "house;"
+    "house;apartments"
+    "houseboat"
+    "housebuilding=semidetached_house"
+    "housem"
+    "house;residential"
+    "houses"
+    "house semi"
+    "house=terraced"
+    "house;yes"
+    "housing"
+    "Landhaus"
+    "dwelling_house"
+    "mobile_home"
+    "residential"
+    "semidetached_house"
+    "semidetached"
+    "terraced_house"
+    "terrace_house"
+  }
+  ?building osmkey:building ?building_types .
+}
+MINUS
+{
+  # Filter out buildings that lay within landuses where there is probably no residential housing
+  SELECT ?building WHERE {
+    ?building osmkey:building [] .
+    ?landuse ogc:sfContains ?building .
+    VALUES ?landuse_types {
+      "industrial"
+      "cemetery"
+      "commercial"
+      "retail"
+      "landfill"
+      "garages"
+      "military"
+      "religious"
+      "education"
+      "highway"
+      "depot"
+      "fairground"
+      "storage"
+      "motorway"
+      "harbour"
+      "garage"
+    }
+    VALUES ?landuse_predicates {
+      osmkey:landuse
+      osmkey:amenity
+    }
+    ?landuse ?landuse_predicates ?landuse_types .
+  }
+}
+
+# Use '#' as part of the replace rule. This way, if no replacements are intended, the replace rule can be left out 
+#%BUILDINGS_EXTRA%

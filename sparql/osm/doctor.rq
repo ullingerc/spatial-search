@@ -1,0 +1,10 @@
+# All doctors' practices
+{
+  {
+    ?doctor osmkey:amenity "doctors" .
+  }
+  UNION
+  {
+    ?doctor osmkey:healthcare "doctor" .
+  }
+}

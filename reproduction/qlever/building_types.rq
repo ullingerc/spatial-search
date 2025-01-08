@@ -1,0 +1,7 @@
+# Helper / Find the most common values for an OSM tag
+PREFIX ogc: <http://www.opengis.net/rdf#>
+PREFIX osmrel: <https://www.openstreetmap.org/relation/>
+PREFIX osmkey: <https://www.openstreetmap.org/wiki/Key:>
+SELECT ?building (COUNT(?building) as ?count)  WHERE {
+  osmrel:51477 ogc:sfContains/osmkey:building ?building . # amenity, shop, railway, public_transport
+} GROUP BY ?building ORDER BY DESC(?count)

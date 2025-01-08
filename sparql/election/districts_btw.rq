@@ -1,0 +1,25 @@
+# Join WK geometry (only suitable for "Bundestagswahl")
+# URL back to election Qlever instance
+SERVICE qleverElection: {
+  {
+    # Gather all election districts with their official number
+    # We need to pass along the ?election in order to only use districts 
+    # of the same election if the server holds data of multiple elections
+    # with possibly different districts 
+    SELECT  ?election
+            ?wk
+            (SAMPLE(?area_no_) AS ?area_no_o_)
+            (SAMPLE(?name_clean_o) AS ?name_clean_o_)
+    WHERE {
+      ?wk a election:districts ;
+          rdfs:label ?name_clean_o ;
+          rdfs:member ?election .
+      ?re a election:result ;
+          election:body "BT" ;
+          election:area_no ?area_no_ ;
+          election:area_name ?name_clean_o ;
+          rdfs:member ?election .
+    }
+    GROUP BY ?election ?wk
+  }
+}

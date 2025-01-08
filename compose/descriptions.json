@@ -1,0 +1,182 @@
+{
+    "template": [
+        "Template",
+        "The template may contain any SPARQL code for further processing of the final results from the spatial searches. It contains placeholders where code will be automatically inserted."
+    ],
+    "template:filename": [
+        "Template File",
+        "Select from a list of available template files."
+    ],
+    "template:replace": [
+        "Replace Rules",
+        "Manually specify replace rules here that will be applied to the result SPARQL query. The replace operations will be repeated until none of the search patterns are found."
+    ],
+    "spatial_searches": [
+        "Spatial Searches",
+        "Any number of spatial search tasks can be defined here."
+    ],
+    "template:replace:_": [
+        "Replace Rule",
+        "An individual replace rule. It must contain a search pattern and either a replace pattern or a replace file."
+    ],
+    "template:replace:_:search": [
+        "Search Pattern",
+        "A regular expression to search for in the template after spatial searches have been inserted (for regular expression syntax see Python 're' documentation)."
+    ],
+    "template:replace:_:replace": [
+        "Replace Pattern",
+        "A replace string to be inserted for the search pattern. It may use capture groups from the search pattern (see Python 're' documentation). Use capture groups with caution: replacements are applied recursively. Mutually exclusive to replace filename."
+    ],
+    "template:replace:_:replace_file": [
+        "Replace Filename",
+        "A file whose contents will be inserted for the search pattern. Mutually exclusive to replace pattern."
+    ],
+    "spatial_searches:_": [
+        "Spatial Search Task",
+        "A single spatial search task."
+    ],
+    "spatial_searches:_:config": [
+        "Configuration",
+        "Specify parameters what to search for. At least one of the limits is required."
+    ],
+    "spatial_searches:_:config:algorithm": [
+        "Algorithm",
+        "The spatial search algorithm to use."
+    ],
+    "spatial_searches:_:config:numNearestNeighbors": [
+        "Number of Nearest Neighbors",
+        "How many results (the nearest neighbors) should be returned for each left element. Set to 0 for unlimited."
+    ],
+    "spatial_searches:_:config:maxDistance": [
+        "Maximum Distance in Meters",
+        "How many meters may the nearest neighbors be away to be considered, for each left element. Set to 0 for unlimited."
+    ],
+    "spatial_searches:_:template_pattern": [
+        "Template Pattern",
+        "A pattern string present in the selected template where the SPARQL code of this spatial search will be inserted."
+    ],
+    "spatial_searches:_:left": [
+        "Left Join Side",
+        "A list of SPARQL shards. For each of these a spatial search for the closest elements of each shard from the right side will be included."
+    ],
+    "spatial_searches:_:right": [
+        "Right Join Side",
+        "A list of SPARQL shards (with optional payload variables). For all centroids from the current left shard, the closest ones from each of these is searched for."
+    ],
+    "spatial_searches:_:left:_": [
+        "SPARQL shard",
+        "Selects a certain type of geographic point of interest. The shard is expected to select a variable with the same name as the file without extension. The centroid of this variable will be used."
+    ],
+    "spatial_searches:_:right:_": [
+        "SPARQL shard",
+        "Selects a certain type of geographic point of interest. The shard is expected to select a variable with the same name as the file without extension. The centroid of this variable will be used."
+    ],
+    "spatial_searches:_:right:_:filename": [
+        "Filename",
+        "The SPARQL shard"
+    ],
+    "spatial_searches:_:right:_:payload": [
+        "Payload Variables",
+        "A list of variables defined inside the SPARQL shard that should be included in the result. The automatically defined <code>?[name]_centroid</code> and the distance variable are included by default and do not need to be added. If you add <code>?[name]_count</code> this variable will be defined automatically. You may specify <code>&lt;all&gt;</code> or <code>spatialSearch:all</code> to select everything. Remember to add the variables to your user selectors too."
+    ],
+    "spatial_searches:_:right:_:payload:_": [
+        "Payload Variable",
+        "A variable or <code>&lt;all&gt;</code>"
+    ],
+    "spatial_searches:_:name_template": [
+        "Variable Name Configuration",
+        "Define a template for the naming of the distance variable between two shards"
+    ],
+    "spatial_searches:_:name_template:template": [
+        "Template for Variable Name",
+        "Here you can use the left, right and type replace patterns."
+    ],
+    "spatial_searches:_:name_template:patterns": [
+        "Replace Patterns",
+        "in the Variable Name Template"
+    ],
+    "spatial_searches:_:name_template:patterns:left": [
+        "Pattern for the left join variable",
+        ""
+    ],
+    "spatial_searches:_:name_template:patterns:right": [
+        "Pattern for the right join variable",
+        ""
+    ],
+    "spatial_searches:_:name_template:patterns:type": [
+        "Pattern for the join type string",
+        ""
+    ],
+    "spatial_searches:_:group_template": [
+        "Group Template",
+        "All sub-tasks of a spatial search with the same left shard will be grouped together. The group may be split by the group size parameter. This template defines the SPARQL code for each of these groups of spatial search operations."
+    ],
+    "spatial_searches:_:group_template:filename": [
+        "Group Template File",
+        "Select from a list of available group template files."
+    ],
+    "spatial_searches:_:group_template:patterns": [
+        "Replace Patterns",
+        "Change the patterns that are used to insert subqueries into the group template."
+    ],
+    "spatial_searches:_:group_template:patterns:queries": [
+        "Pattern for the query code",
+        "This pattern will be replaced by the query body."
+    ],
+    "spatial_searches:_:group_template:patterns:select": [
+        "Pattern for selectors",
+        "This pattern will be replaced by select columns. It should be found between SELECT and WHERE."
+    ],
+    "spatial_searches:_:group_size": [
+        "Group Size",
+        "Split the spatial search into multiple groups of subqueries of at most this number of spatial search operations each. Spatial searches with different left sides are always split. Set to 0 for unlimited."
+    ],
+    "spatial_searches:_:add_selectors": [
+        "User Selectors",
+        "A list of columns or expressions that should be selected for each spatial search operation."
+    ],
+    "spatial_searches:_:add_selectors:selectors": [
+        "User Selector Templates",
+        "A generic list of selectors with placeholders for variables from each spatial search operation."
+    ],
+    "spatial_searches:_:add_selectors:patterns": [
+        "Replace Patterns",
+        "The patterns will be used to insert the correct variable names into the generic selector templates."
+    ],
+    "spatial_searches:_:add_selectors:patterns:dist": [
+        "Pattern for distance variable",
+        ""
+    ],
+    "spatial_searches:_:add_selectors:patterns:count": [
+        "Pattern for count variable",
+        "This variable contains the size of the current right join table."
+    ],
+    "spatial_searches:_:add_selectors:patterns:centroid": [
+        "Pattern for right centroid variable",
+        ""
+    ],
+    "spatial_searches:_:add_selectors:selectors:_": [
+        "User Selector Template",
+        "Here you can use the distance, count and right replace patterns."
+    ],
+    "spatial_searches:_:provided_values": [
+        "Provided VALUES statements",
+        "Define VALUES statements that will be inserted into the SPARQL shards where necessary."
+    ],
+    "spatial_searches:_:provided_values:_": [
+        "VALUES statement",
+        ""
+    ],
+    "spatial_searches:_:provided_values:_:variable": [
+        "Variable",
+        ""
+    ],
+    "spatial_searches:_:provided_values:_:values": [
+        "Values",
+        ""
+    ],
+    "spatial_searches:_:provided_values:_:values:_": [
+        "Value",
+        ""
+    ]
+}

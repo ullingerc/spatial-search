@@ -1,0 +1,6 @@
+# All chemists / pharmacies
+VALUES ?pharmacy_amenity_types_ {
+  "pharmacy"
+  "chemist"
+}
+?pharmacy ?poi_predicates ?pharmacy_amenity_types_ .

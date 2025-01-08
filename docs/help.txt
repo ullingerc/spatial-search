@@ -1,0 +1,95 @@
+This container provides programs that generate RDF turtle datasets and SPARQL
+queries as described in the thesis "Efficient Spatial Search for the QLever
+SPARQL engine". Copyright 2024 Christoph Ullinger.
+
+All software and documentation is licensed under the GNU General Public License
+version 3 or later. For more details, see 'make license'
+
+Please note that data sets downloaded and produced by the programs in this
+container have different licenses. For more details, see 'make data_licenses'
+
+-------------------------------- Election Data --------------------------------
+Generate RDF data sets using the election2rdf.py program.
+
+Run on included configuration files and download necessary data: 
+  * for 'Bundestagswahl 2021' use 'make btw21',
+  * for 'Europawahl 2024 in Deutschland' use 'make ew24'
+
+Expected resource usage: less than 10 MB of storage, less than 100 MB of RAM,
+ca. 10 sec for download, ca. 2 sec to compute
+
+Run on your own configuration: see 'make help_election'
+
+--------------------------------- GTFS Feeds ----------------------------------
+Generate RDF data sets from GTFS feeds using the gtfs2rdf.py program.
+
+Run preconfigured commands and download necessary data: 
+  * for GTFS data of VAG Freiburg 2024 (small) use 'make vag24'
+  * for GTFS data of Finland 2024-11 (small) use 'make fintraffic24'
+  * for DELFI e.V. GTFS data of Germany 2021 (large) use 'make delfi21',
+  * for DELFI e.V. GTFS data of Germany 2024 (large) use 'make delfi24'
+
+Expected resource usage with VAG Freiburg or Finland data: output ca. 100 MB of
+storage, intermediate ca. 100 MB of storage, ca. 200 MB of RAM, ca. 1 sec for
+download, ca. 1 sec to unpack, ca. 1 - 2 min to compute
+
+Expected resource usage with DELFI data: output ca. 1 GB of storage,
+intermediate ca. 3 GB of storage, ca. 2 GB of RAM, ca. 2 sec for download,
+ca. 3 sec to unpack, ca. 35 - 40 min to compute
+
+Run on your own GTFS feeds: see 'make help_gtfs'
+
+--------------------------- Further RDF Converters ----------------------------
+The remaining two RDF converters that are used by election2rdf.py and
+gtfs2rdf.py may also be used directly.
+
+For usage see:
+  * Keyhole Markup Language (KML): kml2rdf.py: 'make help_kml'
+  * Comma-Separated Values (CSV): csv2rdf.py: 'make help_csv'
+
+Resource usage depends on the input data set size.
+
+----------------------------------- Queries -----------------------------------
+Generate large spatial SPARQL queries for QLever using the compose_spatial.py
+program.
+
+Run on included configuration files for the election2rdf data sets: 
+  * for 'Bundestagswahl 2021' use 'make btw21_compose',
+  * for 'Europawahl 2024 in Deutschland' use 'make ew24_compose'
+
+Start the interactive user interface (web app):
+  * start built-in http server: use 'make serve_compose'
+
+Expected resource usage: less than 1 MB of storage, less than 25 MB of RAM,
+less than 1 sec to compute
+
+Run on your own configuration: see 'make help_compose'
+
+------------------------------- Reproducibility -------------------------------
+To reproduce the entire thesis' evaluation you may use the script
+'reproduction.py' in the source directory of this container's image.
+Please run it directly on a GNU/Linux host system with 'python3' installed.
+This is due to the script needing to launch additional containers and nested
+containers being unadvisable. Along with 'python3' the script requires some
+very common utilities as well as 'podman' and the 'qlever-control' script to
+be installed. It will check for these dependencies and warn you if they are
+missing.
+
+You may, however, use this container to view the reproduction script's help,
+execute its unit tests and build a standalone zipped python module that you can
+easily run on your host system:
+  * for help on the reproduction script use 'make help_reproduction'
+  * to export a bundled executable to '/output' use 'make export_reproduction',
+    then you may run './run_reproduction' in the directory on your host system
+    mounted to '/output'
+
+Expected resource usage of 'run_reproduction': ca. 1 TB of storage, ca. 100 GB
+of RAM, ca. 85 h to compute on a very good CPU (e.g. AMD Ryzen 9 7950X)
+
+----------------------------------- Testing -----------------------------------
+You may run code quality checks for the python programs in this container
+using:
+
+  * Check code style with flake8: 'make checkstyle'
+  * Run unit tests: 'make test'
+  * Check test code coverage: 'make coverage'

@@ -1,0 +1,10 @@
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX gtfs: <http://vocab.gtfs.org/terms#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+
+SELECT * WHERE {
+  ?stop foaf:name "Freiburg Hauptbahnhof" ;
+        rdfs:member gtfs:feed_delfi_20240603 ;
+        geo:hasGeometry/geo:asWKT ?geo .
+}

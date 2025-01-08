@@ -1,0 +1,20 @@
+# Maximum pairwise distance of stops in a feed
+PREFIX gtfs: <http://vocab.gtfs.org/terms#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+
+SELECT * WHERE {
+  ?stop1 a gtfs:Stop ;
+         foaf:name ?name1 ;
+         rdfs:member gtfs:feed_fintraffic_2024 ; # Insert feed
+         geo:hasCentroid/geo:asWKT ?centroid1 .
+  ?stop2 a gtfs:Stop ;
+         foaf:name ?name2 ;
+         rdfs:member gtfs:feed_fintraffic_2024 ; # Insert feed
+         geo:hasCentroid/geo:asWKT ?centroid2 .
+  BIND(geof:distance(?centroid1, ?centroid2) AS ?dist)
+}
+ORDER BY DESC(?dist)
+LIMIT 1

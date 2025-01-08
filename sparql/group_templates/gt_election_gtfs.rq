@@ -1,0 +1,57 @@
+# Left-Join Infrastructure from GTFS, use with election.rq
+OPTIONAL {
+  SERVICE qleverOSM: {
+    {
+      # All spatial searches (GTFS) are programmatically inserted here:
+
+      # Aggregated on district level
+      SELECT  ?election
+              ?wk
+              (SAMPLE(?area_no_o__) AS ?area_no) # For join
+              (SAMPLE(?name_clean_o__) AS ?name_clean_o) # For join
+              (COUNT(*) AS ?count_buildings_) # This is not correct, bc multipolygon buildings have multiple geo:hasCentroid
+
+              # Aggregation functions for the different points of interest
+
+              %SELECT%
+      WHERE {
+        # Subquery that only returns all buildings per district
+        # This is used to simulate a left-join together with the optional query
+        {
+          SELECT  ?election
+                  ?wk
+                  ?building
+                  (SAMPLE(?area_no_o_) AS ?area_no_o__) # For join
+                  (SAMPLE(?name_clean_o_) AS ?name_clean_o__) # For join
+          WHERE {
+            %BUILDINGS%
+          }
+          GROUP BY ?election ?wk ?building
+        }
+
+        # Aggregated all GTFS stops reasonably reachable from each building
+        OPTIONAL {
+          SELECT  ?election
+                  ?wk
+                  ?building
+                  (SAMPLE(?area_no_o_) AS ?area_no_o__) # For join
+                  (SAMPLE(?name_clean_o_) AS ?name_clean_o__) # For join
+                  
+                  # Build the sum of the daily-average number of trips at all reachable public transport stops
+                  (SUM(?n_trips) AS ?n_trips_sum_)
+          WHERE {
+            %QUERIES%
+          }
+          GROUP BY ?election ?wk ?building
+        }
+
+        # Buildings which do not have any reasonably reachable public transport stops
+        # don't get returned from the optional subquery. We set their number of trips to 0.
+        BIND(IF(BOUND(?n_trips_sum_), ?n_trips_sum_, 0) AS ?n_trips_sum)
+      }
+      GROUP BY ?election ?wk
+
+      # End of spatial searches (GTFS)
+    }
+  }
+}

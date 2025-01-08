@@ -1,0 +1,3 @@
+"stop_id","stop_code","stop_name","stop_desc","stop_lat","stop_lon","location_type","parent_station","wheelchair_boarding","platform_code","level_id"
+"de0831690112","","Emmendingen Bahnhof","Zug->Freiburg","48.119569000000","7.847548000000",0,"de0831690",0,"2","2"
+"de08311650864","","Freiburg Hauptbahnhof","Bahnsteig Gleis 4","47.997765000000","7.841295000000",0,"de083116508",0,"4","2"

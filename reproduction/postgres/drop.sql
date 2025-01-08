@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS osm_centroids, planet_osm_line, planet_osm_point, planet_osm_polygon, planet_osm_roads CASCADE;

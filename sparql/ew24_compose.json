@@ -1,0 +1,174 @@
+{
+    "template": {
+        "filename": "templates/election.rq",
+        "replace": [
+            {
+                "search": "%ELECTION%",
+                "replace": "Europawahl 2024"
+            },
+            {
+                "search": "%SELECT_WK%",
+                "replace_file": "election/districts_ew.rq"
+            },
+            {
+                "search": "%GTFS_VERSION%",
+                "replace": "gtfs:feed_delfi_20240603"
+            },
+            {
+                "search": "%QLEVER_ELECTION_URL%",
+                "replace": "http://host.containers.internal:7926/"
+            },
+            {
+                "search": "%QLEVER_OSM_URL%",
+                "replace": "http://host.containers.internal:7925/"
+            },
+            {
+                "search": "%QLEVER_GTFS_URL%",
+                "replace": "http://host.containers.internal:7928/"
+            },
+            {
+                "search": "%BUILDINGS%",
+                "replace_file": "osm/building.rq"
+            },
+            {
+                "search": "#%BUILDINGS_EXTRA%",
+                "replace_file": "election/districts.rq"
+            }
+        ]
+    },
+    "spatial_searches": [
+        {
+            "config": {
+                "numNearestNeighbors": 1
+            },
+            "template_pattern": "%GROUPS%",
+            "left": [
+                "osm/building.rq"
+            ],
+            "right": [
+                {
+                    "filename": "osm/transport.rq"
+                },
+                {
+                    "filename": "osm/supermarket.rq"
+                },
+                {
+                    "filename": "osm/bakery.rq"
+                },
+                {
+                    "filename": "osm/butcher.rq"
+                },
+                {
+                    "filename": "osm/fuel.rq"
+                },
+                {
+                    "filename": "osm/gastronomy.rq"
+                },
+                {
+                    "filename": "osm/hairdresser.rq"
+                },
+                {
+                    "filename": "osm/hospital.rq"
+                },
+                {
+                    "filename": "osm/kindergarten.rq"
+                },
+                {
+                    "filename": "osm/motorway.rq"
+                },
+                {
+                    "filename": "osm/pharmacy.rq"
+                },
+                {
+                    "filename": "osm/school.rq"
+                },
+                {
+                    "filename": "osm/university.rq"
+                }
+            ],
+            "name_template": {
+                "template": "%RIGHT%",
+                "patterns": {
+                    "left": "%LEFT%",
+                    "right": "%RIGHT%",
+                    "type": "%TYPE%"
+                }
+            },
+            "group_template": {
+                "filename": "group_templates/gt_election.rq",
+                "patterns": {
+                    "queries": "%QUERIES%",
+                    "select": "%SELECT%"
+                }
+            },
+            "group_size": 0,
+            "add_selectors": {
+                "selectors": [
+                    "(AVG(%DIST%) AS %DIST%_avg)",
+                    "(STDEV(%DIST%) AS %DIST%_sd)"
+                ],
+                "patterns": {
+                    "dist": "%DIST%",
+                    "count": "%COUNT%",
+                    "centroid": "%CENTROID%"
+                }
+            },
+            "provided_values": [
+                {
+                    "variable": "?poi_predicates",
+                    "values": [
+                        "osmkey:building",
+                        "osmkey:shop",
+                        "osmkey:amenity",
+                        "osmkey:landuse"
+                    ]
+                }
+            ]
+        },
+        {
+            "config": {
+                "maxDistance": 300
+            },
+            "template_pattern": "%GTFS%",
+            "left": [
+                "osm/building.rq"
+            ],
+            "right": [
+                {
+                    "filename": "gtfs/stop.rq",
+                    "payload": [
+                        "?n_trips"
+                    ]
+                }
+            ],
+            "name_template": {
+                "template": "%RIGHT%",
+                "patterns": {
+                    "left": "%LEFT%",
+                    "right": "%RIGHT%",
+                    "type": "%TYPE%"
+                }
+            },
+            "group_template": {
+                "filename": "group_templates/gt_election_gtfs.rq",
+                "patterns": {
+                    "queries": "%QUERIES%",
+                    "select": "%SELECT%"
+                }
+            },
+            "group_size": 4,
+            "add_selectors": {
+                "selectors": [
+                    "# Average number for all buildings in the district of the daily average of trips at reasonably reachable public transport stops:",
+                    "(AVG(?n_trips_sum) AS ?n_trips_avg)"
+                ],
+                "patterns": {
+                    "dist": "%DIST%",
+                    "count": "%COUNT%",
+                    "centroid": "%CENTROID%"
+                }
+            },
+            "provided_values": []
+        }
+    ]
+}

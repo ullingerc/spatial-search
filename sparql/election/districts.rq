@@ -1,0 +1,8 @@
+# Helper for "Buildings Extra" replace
+{
+  # Put this in a subquery to avoid query planner decisions that go out of memory
+  %SELECT_WK%
+}
+
+# The building is contained in which district
+?wk ogc:sfContains ?building .

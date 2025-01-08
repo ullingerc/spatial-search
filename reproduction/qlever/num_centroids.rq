@@ -1,0 +1,4 @@
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+SELECT (COUNT(*) AS ?count) WHERE {
+    ?x geo:hasCentroid ?y .
+}

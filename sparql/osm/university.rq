@@ -1,0 +1,6 @@
+# All university buildings
+VALUES ?university_amenity_types_ {
+  "university"
+  "college"
+}
+?university ?poi_predicates ?university_amenity_types_ .

@@ -1,0 +1,39 @@
+{
+    "address": "",
+    "port": 7990,
+    "verbose": true,
+    "templates": [
+        "templates/election.rq",
+        "templates/simple.rq"
+    ],
+    "group_templates": [
+        "group_templates/gt_election.rq",
+        "group_templates/gt_election_gtfs.rq",
+        "group_templates/gt_simple.rq"
+    ],
+    "shards": [
+        "osm/building.rq",
+        "osm/bakery.rq",
+        "osm/butcher.rq",
+        "osm/fuel.rq",
+        "osm/gastronomy.rq",
+        "osm/hairdresser.rq",
+        "osm/hospital.rq",
+        "osm/kindergarten.rq",
+        "osm/motorway.rq",
+        "osm/pharmacy.rq",
+        "osm/school.rq",
+        "osm/supermarket.rq",
+        "osm/transport.rq",
+        "osm/university.rq",
+        "gtfs/stop.rq"
+    ],
+    "default_left": "osm/building.rq",
+    "default_right": "osm/transport.rq",
+    "replace_files": [
+        "election/districts.rq",
+        "election/districts_btw.rq",
+        "election/districts_ew.rq",
+        "osm/building.rq"
+    ]
+}

@@ -1,0 +1,7 @@
+# All supermarkets, discounters, convenience stores
+VALUES ?supermarket_amenity_types_ {
+  "supermarket"
+  "grocery_store"
+  "convenience"
+}
+?supermarket ?poi_predicates ?supermarket_amenity_types_ .

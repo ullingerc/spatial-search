@@ -1,0 +1,67 @@
+{
+    "template": {
+        "filename": "",
+        "replace": [
+            {
+                "search": "",
+                "replace": "",
+                "replace_file": ""
+            }
+        ]
+    },
+    "spatial_searches": [
+        {
+            "config": {
+                "algorithm": "",
+                "numNearestNeighbors": 1,
+                "maxDistance": 1
+            },
+            "template_pattern": "",
+            "left": [
+                ""
+            ],
+            "right": [
+                {
+                    "filename": "",
+                    "payload": [
+                        ""
+                    ]
+                }
+            ],
+            "name_template": {
+                "template": "",
+                "patterns": {
+                    "left": "",
+                    "right": "",
+                    "type": ""
+                }
+            },
+            "group_template": {
+                "filename": "",
+                "patterns": {
+                    "queries": "",
+                    "select": ""
+                }
+            },
+            "group_size": 1,
+            "add_selectors": {
+                "selectors": [
+                    ""
+                ],
+                "patterns": {
+                    "dist": "",
+                    "count": "",
+                    "centroid": ""
+                }
+            },
+            "provided_values": [
+                {
+                    "variable": "",
+                    "values": [
+                        ""
+                    ]
+                }
+            ]
+        }
+    ]
+}

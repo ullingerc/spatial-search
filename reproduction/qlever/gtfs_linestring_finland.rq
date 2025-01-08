@@ -1,0 +1,12 @@
+# All finnish night trains
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX gtfs: <http://vocab.gtfs.org/terms#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT DISTINCT ?train_number ?destination ?route WHERE {
+  ?trip a gtfs:Trip ;
+        rdfs:member gtfs:feed_fintraffic_2024 ;
+        gtfs:route/gtfs:shortName ?train_number ;
+        gtfs:headsign ?destination ;
+        gtfs:shape/geo:hasGeometry/geo:asWKT ?route .
+  FILTER(STRSTARTS(?train_number, "PYO "))  # PYO = Night train
+}

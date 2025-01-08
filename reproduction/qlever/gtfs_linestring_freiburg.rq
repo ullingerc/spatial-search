@@ -1,0 +1,10 @@
+# All VAG Freiburg routes with destination Littenweiler
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX gtfs: <http://vocab.gtfs.org/terms#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT DISTINCT ?wkt WHERE {
+  ?trip a gtfs:Trip ;
+        rdfs:member gtfs:feed_vag_2024 ;
+        gtfs:headsign "Littenweiler" ;
+        gtfs:shape/geo:hasGeometry/geo:asWKT ?wkt .
+}

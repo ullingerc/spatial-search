@@ -1,0 +1,26 @@
+# Simple Query Template for Spatial Search
+
+# Magic SERVICE IRI for spatial search
+PREFIX spatialSearch: <https://qlever.cs.uni-freiburg.de/spatialSearch/>
+
+# Prefix declarations for OSM
+PREFIX osm: <https://www.openstreetmap.org/>
+PREFIX osmkey: <https://www.openstreetmap.org/wiki/Key:>
+PREFIX osmrel: <https://www.openstreetmap.org/relation/>
+PREFIX osmway: <https://www.openstreetmap.org/way/>
+PREFIX osmnode: <https://www.openstreetmap.org/node/>
+
+# Prefix declarations for datatypes, standard predicates, etc
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX math: <http://www.w3.org/2005/xpath-functions/math#>
+
+# Prefix declarations for GeoSPARQL
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ogc: <http://www.opengis.net/rdf#>
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+
+SELECT * WHERE {
+    %SPATIALSEARCH%
+}

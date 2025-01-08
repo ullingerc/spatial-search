@@ -1,0 +1,6 @@
+# All hospital buildings
+VALUES ?hospital_amenity_types_ {
+  "hospital"
+  "clinic"
+}
+?hospital ?poi_predicates ?hospital_amenity_types_ .

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+    <Document id="example">
+        <Folder id="example1">
+            <Placemark id="example1_1">
+                <name>example 1.1</name>
+                <description>A multi polygon in kml</description>
+                <MultiGeometry>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>
+                                    1.0,1.5,0 2.0,2.5,0
+                                    3.0,4.0,0 3.0,1.5,0
+                                </coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <innerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>
+                                    2.0,2.25,0 2.5,2.25,0 2.5,2.5,0
+                                </coordinates>
+                            </LinearRing>
+                        </innerBoundaryIs>
+                    </Polygon>
+                    <Polygon>
+                        <outerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>
+                                    11.0,11.5,0 12.0,12.5,0
+                                    13.0,14.0,0 13.0,11.5,0
+                                </coordinates>
+                            </LinearRing>
+                        </outerBoundaryIs>
+                        <innerBoundaryIs>
+                            <LinearRing>
+                                <coordinates>
+                                    12.0,12.25,0 12.5,12.25,0 12.5,12.5,0
+                                </coordinates>
+                            </LinearRing>
+                        </innerBoundaryIs>
+                    </Polygon>
+                </MultiGeometry>
+            </Placemark>
+        </Folder>
+    </Document>
+</kml>

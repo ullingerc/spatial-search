@@ -1,0 +1,61 @@
+{
+    "template": {
+        "filename": "templates/simple.rq"
+    },
+    "spatial_searches": [
+        {
+            "config": {
+                "algorithm": "s2",
+                "numNearestNeighbors": 2,
+                "maxDistance": null
+            },
+            "template_pattern": "%SPATIALSEARCH%",
+            "left": [
+                "osm/building.rq"
+            ],
+            "right": [
+                {
+                    "filename": "osm/bakery.rq"
+                }
+            ],
+            "name_template": {
+                "template": "%LEFT%_%RIGHT%",
+                "patterns": {
+                    "left": "%LEFT%",
+                    "right": "%RIGHT%",
+                    "type": "%TYPE%"
+                }
+            },
+            "group_template": {
+                "filename": "group_templates/gt_simple.rq",
+                "patterns": {
+                    "queries": "%QUERIES%",
+                    "select": "%SELECT%"
+                }
+            },
+            "group_size": 10,
+            "add_selectors": {
+                "selectors": [
+                    "%CENTROID%",
+                    "%DIST%"
+                ],
+                "patterns": {
+                    "dist": "%DIST%",
+                    "count": "%COUNT%",
+                    "centroid": "%CENTROID%"
+                }
+            },
+            "provided_values": [
+                {
+                    "variable": "?poi_predicates",
+                    "values": [
+                        "osmkey:building",
+                        "osmkey:shop",
+                        "osmkey:amenity",
+                        "osmkey:landuse"
+                    ]
+                }
+            ]
+        }
+    ]
+}

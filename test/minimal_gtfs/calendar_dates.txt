@@ -1,0 +1,3 @@
+"service_id","date","exception_type"
+5957,20240520,2
+5957,20240526,1

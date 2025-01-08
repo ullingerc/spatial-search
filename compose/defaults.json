@@ -1,0 +1,13 @@
+{
+    "spatial_searches:_:template_pattern": "%SPATIALSEARCH%",
+    "spatial_searches:_:name_template:template": "%LEFT%_%RIGHT%",
+    "spatial_searches:_:name_template:patterns:left": "%LEFT%",
+    "spatial_searches:_:name_template:patterns:right": "%RIGHT%",
+    "spatial_searches:_:name_template:patterns:type": "%TYPE%",
+    "spatial_searches:_:group_template:patterns:queries": "%QUERIES%",
+    "spatial_searches:_:group_template:patterns:select": "%SELECT%",
+    "spatial_searches:_:group_size": 10,
+    "spatial_searches:_:add_selectors:patterns:dist": "%DIST%",
+    "spatial_searches:_:add_selectors:patterns:count": "%COUNT%",
+    "spatial_searches:_:add_selectors:patterns:centroid": "%CENTROID%"
+}

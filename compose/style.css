@@ -1,0 +1,135 @@
+body {
+    font-family: sans-serif;
+}
+
+.item {
+    border: 1px solid gray;
+    padding: 4px;
+    margin-left: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    /* box-shadow: -1px 1px 2px lightgray; */
+}
+
+.sitem {
+    padding: 5px;
+    margin-left: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.item>button {
+    margin-left: 10px;
+}
+
+.send,
+.send>button {
+    font-size: 18px;
+    text-align: center;
+}
+
+.send {
+    margin: 20px;
+}
+
+.error {
+    background-color: darkred;
+    color: white;
+}
+
+input,
+select,
+button,
+option {
+    border: 1px solid gray;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+input[type=text] {
+    min-width: 40%;
+}
+
+select,
+button,
+summary {
+    cursor: pointer;
+}
+
+summary {
+    user-select: none;
+    padding: 2px;
+    border-radius: 2px;
+}
+
+select:hover,
+button:hover,
+summary:hover {
+    background-color: lightgray;
+}
+
+a {
+    color: black;
+    text-decoration: none;
+}
+
+a:visited {
+    color: black;
+}
+
+em {
+    color: gray;
+}
+
+.expbtn {
+    margin-left: 10px;
+}
+
+::backdrop {
+    background-color: #222222;
+    opacity: 0.75;
+}
+
+.view_btn,
+.dialog_close {
+    margin-left: 5px;
+}
+
+@media (prefers-color-scheme: dark) {
+
+    body,
+    input,
+    select,
+    button,
+    dialog {
+        background-color: #222222;
+        color: white;
+    }
+
+    em {
+        color: darkgray;
+    }
+
+    select:hover,
+    button:hover,
+    summary:hover {
+        background-color: #444444;
+    }
+
+    small {
+        color: white;
+    }
+
+    a {
+        color: white;
+    }
+
+    a:visited {
+        color: white;
+    }
+
+    em {
+        color: darkgray;
+    }
+
+}

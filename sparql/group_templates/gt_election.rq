@@ -1,0 +1,15 @@
+# General template for use with election.rq
+# Aggregated on district level
+SELECT  ?election
+        ?wk
+        (SAMPLE(?area_no_o_) AS ?area_no) # For join
+        (SAMPLE(?name_clean_o_) AS ?name_clean_o) # For join
+        (COUNT(*) AS ?count_buildings_) # This is not correct, bc multipolygon buildings have multiple geo:hasCentroid
+
+        # Aggregation functions for the different points of interest
+
+        %SELECT%
+WHERE {
+        %QUERIES%
+}
+GROUP BY ?election ?wk

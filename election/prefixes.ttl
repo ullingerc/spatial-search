@@ -1,0 +1,7 @@
+@prefix election: <https://www.bundeswahlleiterin.de/#> .
+@prefix geo: <http://www.opengis.net/ont/geosparql#> .
+@prefix manifesto: <https://manifesto-project.wzb.eu/#> .
+@prefix osmrel: <https://www.openstreetmap.org/relation/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix wd: <http://www.wikidata.org/entity/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .

@@ -1,0 +1,5 @@
+original <- read.csv("btw21-manifesto.csv")
+replacement <- read.csv("btw21-manifesto-replacement.csv")
+joined <- merge(x=original, y=replacement, by=c("countryname","edate","partyabbrev"))
+print("Correlation between the official manifesto project RILE score and our replacement:")
+print(cor(joined$rile.x, joined$rile.y))

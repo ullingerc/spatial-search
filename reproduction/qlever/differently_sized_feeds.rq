@@ -1,0 +1,35 @@
+# For GTFS data set: number of stops in each GTFS feed
+PREFIX spatialSearch: <https://qlever.cs.uni-freiburg.de/spatialSearch/>
+PREFIX gtfs: <http://vocab.gtfs.org/terms#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+
+SELECT * WHERE {
+  {
+    SELECT ("delfi_20210924" AS ?feed) (COUNT(*) AS ?count) WHERE {
+      ?stop a gtfs:Stop ;
+            rdfs:member gtfs:feed_delfi_20210924 .
+    }
+  }
+  UNION
+  {
+    SELECT ("delfi_20240603" AS ?feed) (COUNT(*) AS ?count) WHERE {
+      ?stop a gtfs:Stop ;
+            rdfs:member gtfs:feed_delfi_20240603 .
+    }
+  }
+  UNION
+  {
+    SELECT ("vag_2024" AS ?feed) (COUNT(*) AS ?count) WHERE {
+      ?stop a gtfs:Stop ;
+            rdfs:member gtfs:feed_vag_2024 .
+    }
+  }
+  UNION
+  {
+    SELECT ("fintraffic_2024" AS ?feed) (COUNT(*) AS ?count) WHERE {
+      ?stop a gtfs:Stop ;
+            rdfs:member gtfs:feed_fintraffic_2024 .
+    }
+  }
+}

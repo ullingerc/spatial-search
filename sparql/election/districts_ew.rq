@@ -1,0 +1,34 @@
+# Join WK geometry (only suitable for European Parliament Election in Germany)
+# There election districts are equal to the counties / administrative districts
+SERVICE qleverOSM: {
+    # Gather geometries 
+    ?wk osmkey:boundary "administrative" ;
+        osmkey:admin_level ?admin_level ;
+        rdf:type osm:relation ;
+        osmkey:name ?name ;
+        osmkey:de:amtlicher_gemeindeschluessel ?ags .
+    BIND(xsd:integer(REPLACE(?ags, "^0*([0-9]{4,5})(000)?$", "\\1")) AS ?area_no_o_)
+    BIND(REPLACE(?name, "Landkreis ", "") as ?name_clean_o_)
+    # Due to special role of Berlin, we cannot use admin_level=6
+    FILTER(xsd:integer(?admin_level) <= 6)
+    FILTER(REGEX(?ags, "^0*([0-9]{4,5})(000)?$"))
+
+    # URL back to election Qlever instance
+    # Join with offical districts
+    # This is necessary to link geometry and election and to ensure EP election
+    SERVICE qleverElection: {
+        # Gather all election districts with their official number
+        {
+            SELECT  ?election
+                    ?area_no_o_
+            WHERE {
+                ?re a election:result ;
+                    election:body "EP" ;
+                    election:area_no ?area_no_o ;
+                    rdfs:member ?election .
+                BIND(xsd:integer(?area_no_o) AS ?area_no_o_)
+            }
+            GROUP BY ?election ?area_no_o_
+        }
+    }
+}

@@ -1,0 +1,184 @@
+# Full Query Template for Election & OSM & GTFS
+# Copyright (c) 2024 Christoph Ullinger
+# This is Free Software under GNU General Public License version 3.
+
+# Insert URLs of QLever instances here for SERVICE calls
+PREFIX qleverOSM: <%QLEVER_OSM_URL%>
+PREFIX qleverElection: <%QLEVER_ELECTION_URL%>
+PREFIX qleverGTFS: <%QLEVER_GTFS_URL%>
+
+# Magic SERVICE IRI for spatial search
+PREFIX spatialSearch: <https://qlever.cs.uni-freiburg.de/spatialSearch/>
+
+# Prefix declarations for OSM
+PREFIX osm: <https://www.openstreetmap.org/>
+PREFIX osmkey: <https://www.openstreetmap.org/wiki/Key:>
+PREFIX osmrel: <https://www.openstreetmap.org/relation/>
+PREFIX osmway: <https://www.openstreetmap.org/way/>
+PREFIX osmnode: <https://www.openstreetmap.org/node/>
+
+# Prefix declarations for election2rdf
+PREFIX election: <https://www.bundeswahlleiterin.de/#>
+PREFIX manifesto: <https://manifesto-project.wzb.eu/#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+
+# Prefix declarations for datatypes, standard predicates, etc
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX math: <http://www.w3.org/2005/xpath-functions/math#>
+
+# Prefix declarations for GeoSPARQL
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX ogc: <http://www.opengis.net/rdf#>
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+
+# Prefix declarations for Linked GTFS
+PREFIX gtfs: <http://vocab.gtfs.org/terms#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+
+# Run on a QLever instance with election dataset
+SELECT * WHERE {
+  # Polarization data on district-level
+  {
+    SELECT  ?election
+            ?area_no
+            (SAMPLE(?area_name_) AS ?area_name)
+            (SUM(?votes_ * ?rile_) AS ?pasysav)
+            (SUM(?votes_ * math:pow(?rile_ - ?pasysav, 2)) AS ?polarization)
+            (1 - SUM(?votes_) AS ?other_votes)
+            (SAMPLE(?body_) AS ?body)
+    WHERE {
+      {
+        # Aggregation on district-party (that is individual candidacy ="Wahlantritt" level)
+        SELECT  ?election
+                ?area_no
+                (SAMPLE(?area_name_c) AS ?area_name_)
+                (SUM(?votes) / 100 AS ?votes_)
+                (SAMPLE(?rile) AS ?rile_)
+                (SAMPLE(?body) AS ?body_)
+        WHERE {
+          {
+            # Every data point needs to belong to the same election
+            ?election a election:election ;
+                      election:countryname ?countryname ;
+                      election:date ?date ;
+                      rdfs:label "%ELECTION%" .
+
+            # A candidacy
+            ?candidacy  a election:result ;
+                        rdfs:member ?election ;
+                        election:body ?body ;
+                        election:area_no ?area_no ;
+                        election:area_name ?area_name_c ;
+                        election:candidate_type "Partei" ;
+                        election:candidate_name ?party ;
+                        election:votes_percent ?votes .
+            
+            # Different naming in European Parliament / Bundestag datasets
+            BIND(IF(?body = "EP", "Kreis", "Wahlkreis") AS ?area_type)
+            ?candidacy election:area_type ?area_type .
+
+            # 2nd vote for Bundestag, 1st vote for European Parliament
+            BIND(IF(?body = "BT", 2, 1) AS ?vote_type) 
+            ?candidacy election:vote_type ?vote_type .
+          }
+
+          # Fixes for joining the data from various sources with inconsistent party names
+          BIND(REPLACE(REPLACE(REPLACE(?party, "CDU|CSU", "CDU/CSU"), "DIE LINKE", "LINKE"), "GRÜNE", "90/Greens") AS ?p_for_manifesto)
+
+          {
+            # Joining the manifesto project values using the election's date and country
+            ?y a manifesto:manifesto ;
+                rdfs:member ?election ; # Only for system purposes, does not guarantee matching data
+                manifesto:edate ?date ;
+                manifesto:countryname ?countryname ;
+                manifesto:partyabbrev ?p_for_manifesto ;
+                manifesto:rile ?rile .
+          }
+        }
+        GROUP BY ?election ?area_no ?p_for_manifesto
+      }
+    }
+    GROUP BY ?election ?area_no
+  }
+
+  # Join election metadata
+  {
+    ?election rdfs:label ?election_name ;
+              election:date ?election_date ;
+              election:countryname ?election_country ;
+              election:wikidata ?wikidata ;
+              election:osm ?osm .
+  }
+
+  # Join structural data
+  OPTIONAL {
+    # Select structural data: un-comment those you wish to use
+    {
+      ?structural a election:structural ;
+                  rdfs:member ?election ;
+                  election:area_no ?area_no ;
+                  election:state ?state ;
+                  election:area_size ?area_size ;
+                  election:pop_density ?pop_density .
+      BIND(math:log(?pop_density) AS ?log_pop_density)
+    }
+    {
+      ?structural election:age_60_74 ?age_60_74 ;
+                  election:age_over74 ?age_over74 ;
+                  election:foreigners ?foreigners ;
+                  election:income ?income ;
+                  election:gdp ?gdp ;
+                  election:social_security ?social_security .
+    }
+    # {
+    #   ?structural election:living_space_per_citizen ?living_space ;
+    #               election:cars ?cars ;
+    #               election:companies ?companies ;
+    #               election:no_municipalities ?no_municipalities ;
+    #               election:population ?population ;
+    #               election:birth_balance ?birth_balance .
+    # }
+    # {
+    #   ?structural election:move_balance ?move_balance ;
+    #               election:landuse_buildings_traffic ?landuse_buildings_traffic ;
+    #               election:landuse_nature ?landuse_nature ;
+    #               election:new_appartments ?new_appartments ;
+    #               election:appartments ?appartments ;
+    #               election:graduates ?graduates .
+    # }
+    # {
+    #   ?structural election:employees ?employees ;
+    #               election:unemployed ?unemployed ;
+    #               election:employees_services ?employees_services ;
+    #               election:employees_trade_traffic ?employees_trade_traffic ;
+    #               election:employees_agriculture ?employees_agriculture ;
+    #               election:employees_manufacturing ?employees_manufacturing .
+    # }
+
+    # Older people
+    BIND((?age_60_74 + ?age_over74) AS ?age_over60)
+
+    # Ex-GDR state?
+    BIND(REGEX(?state, "^Brandenburg|Mecklenburg-Vorpommern|Sachsen(-Anhalt)?|Thüringen$") AS ?east)
+  }
+
+  # Infrastructure via SERVICE query, insert URL to osm-germany Qlever instance
+  OPTIONAL {
+    SERVICE qleverOSM: {
+      {
+        # All spatial searches are programmatically inserted here:
+        SELECT * WHERE {
+            %GROUPS%
+        }
+        # End of spatial searches 
+      }
+    }
+  }
+
+  # Possible additional subquery to gather reachable public transport trips
+  %GTFS%
+}
+ORDER BY ?area_no 
+LIMIT 1000

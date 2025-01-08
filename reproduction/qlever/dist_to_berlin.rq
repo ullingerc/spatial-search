@@ -1,0 +1,9 @@
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX osmkey: <https://www.openstreetmap.org/wiki/Key:>
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+
+SELECT (AVG(?dist) AS ?avg_dist) WHERE {
+  ?osm_entity geo:hasCentroid/geo:asWKT ?geometry .
+  BIND(geof:distance(?geometry, "POINT(13.369661 52.524945)"^^<http://www.opengis.net/ont/geosparql#wktLiteral>) AS ?dist)
+  FILTER(BOUND(?dist))
+}

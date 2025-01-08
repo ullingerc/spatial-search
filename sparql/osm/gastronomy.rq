@@ -1,0 +1,10 @@
+# All gastronomic offerings
+VALUES ?gastronomy_amenity_types_ {
+  "bar"
+  "biergarten"
+  "cafe"
+  "fast_food"
+  "pub"
+  "restaurant"
+}
+?gastronomy ?poi_predicates ?gastronomy_amenity_types_ .

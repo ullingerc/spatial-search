@@ -1,0 +1,19 @@
+# Docker container to evaluate the results of the case study's queries statistically using R.
+FROM debian:bookworm
+
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y time r-recommended r-cran-car r-cran-corrplot curl && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p /data && mkdir -p /app
+
+COPY . /app
+RUN chmod +x /app/*.sh
+
+WORKDIR /app
+CMD ["/bin/bash", "/app/case_study.sh"]
+
+# Usage:
+# podman build -t spatial_stat_repro --file=Dockerfile.stat_repro .
+# podman run --rm -v /path/to/results:/data:rw spatial_stat_repro

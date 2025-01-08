@@ -1,0 +1,24 @@
+# A container for working with OpenStreetMap data using a osm2pgsql + PostgreSQL + PostGIS workflow
+# The database "osm" is automatically initialized. You may mount an output directory to /output and
+# a directory for the PostgreSQL data to /var/lib/postgresql/data
+FROM docker.io/postgres:16-bookworm
+
+RUN apt-get update && apt-get install -y python3 osm2pgsql \
+    postgresql-16-postgis sudo wget zip unzip
+
+RUN mkdir -p /output && chmod a+rw /output
+
+COPY initdb.sh /docker-entrypoint-initdb.d/
+
+RUN chmod +x /docker-entrypoint-initdb.d/initdb.sh
+
+RUN usermod -a -G sudo postgres
+
+# For local usage: set required environment variable
+ENV POSTGRES_PASSWORD=mysecretpassword
+ENV PGDATA=/var/lib/postgresql/data/pgdata
+
+# Usage:
+# podman build -t eval_postgres --file=Dockerfile.postgres .
+# podman run -d --name eval_postgres -v ./:/output:rw eval_postgres
+# podman exec -it -u postgres eval_postgres psql -d osm

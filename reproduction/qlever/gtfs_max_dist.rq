@@ -1,0 +1,28 @@
+# Evaluation query for GTFS data set: find all pairs of stops that are within
+# 25 meters of each other
+PREFIX spatialSearch: <https://qlever.cs.uni-freiburg.de/spatialSearch/>
+PREFIX gtfs: <http://vocab.gtfs.org/terms#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+
+SELECT (AVG(?count) AS ?avg_count) WHERE {
+  {
+    SELECT (COUNT(*) AS ?count) WHERE {
+      ?stop1 a gtfs:Stop ;
+            rdfs:member gtfs:feed_%FEED% ;
+            geo:hasCentroid/geo:asWKT ?centroid1 .
+      SERVICE spatialSearch: {
+        _:config  spatialSearch:algorithm spatialSearch:%ALGORITHM% ;
+                  spatialSearch:left ?centroid1 ;
+                  spatialSearch:right ?centroid2 ;
+                  spatialSearch:maxDistance 100 .
+        {
+          ?stop2 a gtfs:Stop ;
+                 rdfs:member gtfs:feed_%FEED% ;
+                 geo:hasCentroid/geo:asWKT ?centroid2 .
+        }
+      }
+    }
+    GROUP BY ?stop1
+  }
+}

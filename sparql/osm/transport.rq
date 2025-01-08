@@ -1,0 +1,30 @@
+# All public transport stops
+{
+  # Public transport halts tagged amenity
+  VALUES ?transport_amenity_types_ {
+    'bus'
+    'bus_shelter'
+    'bus station'
+    'bus_station'
+    'school_bus'
+    'bus_station'
+    'bus_stop'
+    'train_station'
+  }
+  ?transport osmkey:amenity ?transport_amenity_types_ .
+}
+UNION
+{
+  # Public transport halts tagged public_transport
+  VALUES ?transport_pt_types_ {
+    'platform'
+    'station'
+    'halt'
+    'stop'
+  }
+  VALUES ?transport_pt_pred_ {
+    osmkey:public_transport
+    osmkey:railway
+  }
+  ?transport ?transport_pt_pred_ ?transport_pt_types_ .
+}

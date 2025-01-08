@@ -1,0 +1,45 @@
+{
+    "election": {
+        "label": "ONLY FOR TESTING",
+        "countryname": "Test land",
+        "wikidata": "Q1",
+        "osm": "1",
+        "year": 2021,
+        "date": "26.09.2021",
+        "id_prefix": "btw21_"
+    },
+    "prefixes": [
+        {
+            "prefix": "election",
+            "iri": "https://www.bundeswahlleiterin.de/#"
+        },
+        {
+            "prefix": "manifesto",
+            "iri": "https://manifesto-project.wzb.eu/#"
+        }
+    ],
+    "kml": [
+        {
+            "dataset": "districts",
+            "primary_prefix": "election:districts_",
+            "command": "cat test.kml",
+            "store_filename": "election_test.kml"
+        }
+    ],
+    "csv": [
+        {
+            "dataset": "result",
+            "primary_prefix": "election:result_",
+            "primary_col": null,
+            "command": "cat basic_e.csv",
+            "store_filename": "election_test.csv",
+            "csv_separator": ";",
+            "csv_quote": "\"",
+            "column_mapping": {
+                "a": "body",
+                "b": "date",
+                "c": "district"
+            }
+        }
+    ]
+}

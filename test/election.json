@@ -1,0 +1,123 @@
+{
+    "election": {
+        "label": "Bundestagswahl 2021 ONLY FOR TESTING",
+        "countryname": "Germany",
+        "wikidata": "Q27123005",
+        "osm": "51477",
+        "year": 2021,
+        "date": "26.09.2021",
+        "id_prefix": "btw21_"
+    },
+    "prefixes": [
+        {
+            "prefix": "election",
+            "iri": "https://www.bundeswahlleiterin.de/#"
+        },
+        {
+            "prefix": "manifesto",
+            "iri": "https://manifesto-project.wzb.eu/#"
+        }
+    ],
+    "kml": [
+        {
+            "dataset": "districts",
+            "primary_prefix": "election:districts_",
+            "command": "GEOTMP=$(mktemp) && curl --silent --fail --output $GEOTMP https://web.archive.org/web/20240420144247/https://www.bundeswahlleiterin.de/dam/jcr/87bf809f-d778-493d-8de8-77ebee2af9c6/btw21_geometrie_wahlkreise_kml.zip && unzip -p $GEOTMP > $GEOTMP.2 && unzip -p $GEOTMP.2 > $GEOTMP.3 && cat $GEOTMP.3 && rm $GEOTMP*",
+            "store_filename": "btw21-geography.kml"
+        }
+    ],
+    "csv": [
+        {
+            "dataset": "result",
+            "primary_prefix": "election:result_",
+            "primary_col": null,
+            "command": "curl --silent --fail https://web.archive.org/web/20240401065417/https://www.bundeswahlleiterin.de/dam/jcr/860495c9-83fb-4068-8a99-c1c985ffffd2/w-btw21_kerg2.csv | tail -n +10 | sed 's/\\([[:digit:]]\\),\\([[:digit:]]\\)/\\1\\.\\2/g'",
+            "store_filename": "btw21-election.csv",
+            "csv_separator": ";",
+            "csv_quote": "\"",
+            "column_mapping": {
+                "Wahlart": "body",
+                "Wahltag": "date",
+                "Gebietsart": "area_type",
+                "Gebietsnummer": "area_no",
+                "Gebietsname": "area_name",
+                "UegGebietsart": "parent_area_type",
+                "UegGebietsnummer": "parent_area_no",
+                "Gruppenart": "candidate_type",
+                "Gruppenname": "candidate_name",
+                "Gruppenreihenfolge": "candidate_position",
+                "Stimme": "vote_type",
+                "Anzahl": "votes",
+                "Prozent": "votes_percent",
+                "VorpAnzahl": "votes_prev",
+                "VorpProzent": "votes_prev_percent",
+                "DiffProzent": "votes_delta_percent",
+                "DiffProzentPkt": "votes_delta_points",
+                "Bemerkung": "remark"
+            }
+        },
+        {
+            "dataset": "structural",
+            "primary_prefix": "election:structural_",
+            "primary_col": "Wahlkreis-Nr.",
+            "command": "curl --silent --fail https://web.archive.org/web/20230625013147/https://www.bundeswahlleiterin.de/dam/jcr/b1d3fc4f-17eb-455f-a01c-a0bf32135c5d/btw21_strukturdaten.csv | tail -n +9 | sed 's/\\([[:digit:]]\\)\\.\\([[:digit:]]\\)/\\1\\2/g' | sed 's/\\([[:digit:]]\\),\\([[:digit:]]\\)/\\1\\.\\2/g'",
+            "store_filename": "btw21-structure.csv",
+            "csv_separator": ";",
+            "csv_quote": "\"",
+            "column_mapping": {
+                "Land": "state",
+                "Wahlkreis-Nr.": "area_no",
+                "Wahlkreis-Name": "area_name",
+                "Gemeinden am 31122019 (Anzahl)": "no_municipalities",
+                "Fläche am 31122019 (km²)": "area_size",
+                "Bevölkerung am 31122019 - Insgesamt (in 1000)": "population",
+                "Bevölkerung am 31122019 - Deutsche (in 1000)": "population_citizenship",
+                "Bevölkerung am 31122019 - Ausländer/-innen (%)": "foreigners",
+                "Bevölkerungsdichte am 31122019 (EW je km²)": "pop_density",
+                "Zu- (+) bzw. Abnahme (-) der Bevölkerung 2019 - Geburtensaldo (je 1000 EW)": "birth_balance",
+                "Zu- (+) bzw. Abnahme (-) der Bevölkerung 2019 - Wanderungssaldo (je 1000 EW)": "move_balance",
+                "Alter von ... bis ... Jahren am 31122019 - unter 18 (%)": "age_under18",
+                "Alter von ... bis ... Jahren am 31122019 - 18-24 (%)": "age_18_24",
+                "Alter von ... bis ... Jahren am 31122019 - 25-34 (%)": "age_25_34",
+                "Alter von ... bis ... Jahren am 31122019 - 35-59 (%)": "age_35_59",
+                "Alter von ... bis ... Jahren am 31122019 - 60-74 (%)": "age_60_74",
+                "Alter von ... bis ... Jahren am 31122019 - 75 und mehr (%)": "age_over74",
+                "Bodenfläche nach Art der tatsächlichen Nutzung am 31122019 - Siedlung und Verkehr (%)": "landuse_buildings_traffic",
+                "Bodenfläche nach Art der tatsächlichen Nutzung am 31122019 - Vegetation und Gewässer (%)": "landuse_nature",
+                "Fertiggestellte Wohnungen 2019 (je 1000 EW)": "new_appartments",
+                "Bestand an Wohnungen am 31122019 - insgesamt (je 1000 EW)": "appartments",
+                "Wohnfläche am 31122019 (je Wohnung)": "living_space_per_flat",
+                "Wohnfläche am 31122019 (je EW)": "living_space_per_citizen",
+                "PKW-Bestand am 01012020 - PKW insgesamt (je 1000 EW)": "cars",
+                "PKW-Bestand am 01012020 - PKW mit Elektro- oder Hybrid-Antrieb (%)": "e_cars",
+                "Unternehmensregister 2018 - Unternehmen insgesamt (je 1000 EW)": "companies",
+                "Unternehmensregister 2018 - Handwerksunternehmen (je 1000 EW)": "companies_craftsmen",
+                "Schulabgänger/-innen beruflicher Schulen 2019": "graduates_vocational",
+                "Schulabgänger/-innen allgemeinbildender Schulen 2019 - insgesamt ohne Externe (je 1000 EW)": "graduates_general_school",
+                "Schulabgänger/-innen allgemeinbildender Schulen 2019 - ohne Hauptschulabschluss (%)": "non_graduates",
+                "Schulabgänger/-innen allgemeinbildender Schulen 2019 - mit Hauptschulabschluss (%)": "graduates_hauptschule",
+                "Schulabgänger/-innen allgemeinbildender Schulen 2019 - mit mittlerem Schulabschluss (%)": "graduates_middle",
+                "Schulabgänger/-innen allgemeinblldender Schulen 2019 - mit allgemeiner und Fachhochschulreife (%)": "graduates",
+                "Kindertagesbetreuung am 01032020 - Betreute Kinder unter 3 Jahre (Betreuungsquote)": "kindergarten_under3",
+                "Kindertagesbetreuung am 01032020 - Betreute Kinder 3 bis unter 6 Jahre (Betreuungsquote)": "kindergarten_3_6",
+                "Verfügbares Einkommen der privaten Haushalte 2018 (EUR je EW)": "income",
+                "Bruttoinlandsprodukt 2018 (EUR je EW)": "gdp",
+                "Sozialversicherungspflichtig Beschäftigte am 30062020 - insgesamt (je 1000 EW)": "employees",
+                "Sozialversicherungspflichtig Beschäftigte am 30062020 - Land- und Forstwirtschaft, Fischerei (%)": "employees_agriculture",
+                "Sozialversicherungspflichtig Beschäftigte am 30062020 - Produzierendes Gewerbe (%)": "employees_manufacturing",
+                "Sozialversicherungspflichtig Beschäftigte am 30062020 - Handel, Gastgewerbe, Verkehr (%)": "employees_trade_traffic",
+                "Sozialversicherungspflichtig Beschäftigte am 30062020 - Öffentliche und private Dienstleister (%)": "employees_services",
+                "Sozialversicherungspflichtig Beschäftigte am 30062020 - Übrige Dienstleister und \"ohne Angabe\" (%)": "employees_other",
+                "Empfänger/-innen von Leistungen nach SGB II  Oktober 2020 -  insgesamt (je 1000 EW)": "social_security",
+                "Empfänger/-innen von Leistungen nach SGB II  Oktober 2020 -  nicht erwerbsfähige Hilfebedürftige (%)": "social_security_unemployable",
+                "Empfänger/-innen von Leistungen nach SGB II  Oktober 2020 -  Ausländer/-innen (%)": "social_security_foreigners",
+                "Arbeitslosenquote Februar 2021 - insgesamt": "unemployed",
+                "Arbeitslosenquote Februar 2021 - Männer": "unemployed_men",
+                "Arbeitslosenquote Februar 2021 - Frauen": "unemployed_women",
+                "Arbeitslosenquote Februar 2021 - 15 bis 24 Jahre": "unemployed_youth",
+                "Arbeitslosenquote Februar 2021 - 55 bis 64 Jahre": "unemployed_old",
+                "Fußnoten": "remark"
+            }
+        }
+    ]
+}

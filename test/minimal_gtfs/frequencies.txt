@@ -1,0 +1,2 @@
+"trip_id","start_time","end_time","headway_secs","exact_times"
+2507470876,6:30:00,7:00:00,60,
