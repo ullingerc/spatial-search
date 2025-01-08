@@ -32,8 +32,9 @@ import re
 import itertools
 
 
-SubProcRunMatcher = tuple[str, Optional[Path], Optional[bool |
-                       str | Path]] | tuple[str, Optional[Path]]
+
+SubProcRunMatcher = tuple[str, Optional[Path], Optional[bool | str | Path]] \
+    | tuple[str, Optional[Path]]
 # Matcher: status code, stdout, stderr, identifier
 SubProcFakeResult = tuple[int, str, str, Optional[str]]
 MockSubProcRes = dict[SubProcRunMatcher, SubProcFakeResult]
