@@ -32,7 +32,6 @@ import re
 import itertools
 
 
-
 SubProcRunMatcher = tuple[str, Optional[Path], Optional[bool | str | Path]] \
     | tuple[str, Optional[Path]]
 # Matcher: status code, stdout, stderr, identifier
