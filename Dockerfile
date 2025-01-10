@@ -15,7 +15,7 @@ ENV SPATIAL_CONTAINER=1
 COPY . /app
 
 # Ensure working code
-RUN cd /app && make test && make checkstyle && rm -rf __pycache__
+RUN cd /app && chmod +x *.py && make test && make checkstyle && rm -rf __pycache__
 
 WORKDIR /app
 CMD ["bash", "--rcfile", "/app/.bashrc"]
