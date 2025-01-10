@@ -15,6 +15,9 @@ Run on included configuration files and download necessary data:
   * for 'Bundestagswahl 2021' use 'make btw21',
   * for 'Europawahl 2024 in Deutschland' use 'make ew24'
 
+You may find the configuration in '/app/election/[target].json'. The output
+will be written to '/output/[target].ttl.bz2', '/output/[target]-aux-geo.tsv'.
+
 Expected resource usage: less than 10 MB of storage, less than 100 MB of RAM,
 ca. 10 sec for download, ca. 2 sec to compute
 
@@ -29,6 +32,9 @@ Run preconfigured commands and download necessary data:
   * for DELFI e.V. GTFS data of Germany 2021 (large) use 'make delfi21',
   * for DELFI e.V. GTFS data of Germany 2024 (large) use 'make delfi24'
 
+Input files are automatically downloaded. The output files will be written to
+'/output/[target].ttl.bz2'.
+
 Expected resource usage with VAG Freiburg or Finland data: output ca. 100 MB of
 storage, intermediate ca. 100 MB of storage, ca. 200 MB of RAM, ca. 1 sec for
 download, ca. 1 sec to unpack, ca. 1 - 2 min to compute
@@ -41,7 +47,7 @@ Run on your own GTFS feeds: see 'make help_gtfs'
 
 --------------------------- Further RDF Converters ----------------------------
 The remaining two RDF converters that are used by election2rdf.py and
-gtfs2rdf.py may also be used directly.
+gtfs2rdf.py may also be used directly as CLI programs.
 
 For usage see:
   * Keyhole Markup Language (KML): kml2rdf.py: 'make help_kml'
@@ -57,8 +63,14 @@ Run on included configuration files for the election2rdf data sets:
   * for 'Bundestagswahl 2021' use 'make btw21_compose',
   * for 'Europawahl 2024 in Deutschland' use 'make ew24_compose'
 
+The configuration is sourced from '/app/sparql/[target].json' and output will
+be written to '/output/[election-name].rq'.
+
 Start the interactive user interface (web app):
-  * start built-in http server: use 'make serve_compose'
+  * start built-in HTTP server: use 'make serve_compose'
+
+The web app configuration is sourced from '/app/sparql/serve.json'. Output is
+not written to disk but sent over HTTP. The default port is 7990.
 
 Expected resource usage: less than 1 MB of storage, less than 25 MB of RAM,
 less than 1 sec to compute
@@ -83,6 +95,10 @@ easily run on your host system:
     then you may run './run_reproduction' in the directory on your host system
     mounted to '/output'
 
+On the host, the 'run_reproduction' program automatically extracts all required
+files. Its output is written to the user-specified output directory. Evaluation
+results are stored to a 'results' subdirectory the program creates.
+
 Expected resource usage of 'run_reproduction': ca. 1 TB of storage, ca. 100 GB
 of RAM, ca. 85 h to compute on a very good CPU (e.g. AMD Ryzen 9 7950X)
 
@@ -93,3 +109,6 @@ using:
   * Check code style with flake8: 'make checkstyle'
   * Run unit tests: 'make test'
   * Check test code coverage: 'make coverage'
+
+Expected resource usage of unit tests: less than 10 MB of temporary storage,
+ca. 500 MB of RAM, less than 30 sec to compute
