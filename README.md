@@ -11,7 +11,7 @@ Searching for geographically close points in data sets containing hundreds of mi
 
 We introduce programs for the conversion of data from multiple formats (*Keyhole Markup Language*, *Comma-Separated Values* and *General Transit Feed Specification*) to RDF. Additionally, a new program allows users to construct complex spatial queries for QLever with a graphical user interface.
 
-The retrieval of data, which would otherwise require working with many different data sets individually, is now possible in a single SPARQL query generated from a simple configuration file. We demonstrate the usability of our workflow using a current research question from political science.
+The retrieval of data, which would otherwise require working with many different data sets individually, is now possible in a single SPARQL query. We demonstrate the usability of our workflow using a current research question from political science.
 
 Furthermore, we show that our efficient spatial search implementation in QLever surpasses the query performance of the popular PostgreSQL system by orders of magnitude for large inputs. Regarding all benchmarks, our implementation shows more stable running times.
 
